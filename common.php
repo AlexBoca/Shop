@@ -108,7 +108,6 @@ function uploadImage() {
 	$uploadOk = 1;
 	$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 	$imgName = $target_dir . md5(date('Y-m-d H:i:s')) . '.' . $imageFileType;
-
 	if (isset($_POST["submit"])) {
 		$check = getimagesize($_FILES["image"]["tmp_name"]);
 		if ($check !== false) {
@@ -217,10 +216,16 @@ function updateProduct() {
 		$bindVars = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
 		$condition = ['id' => $_GET['update-product']];
 	}
-	$product = getProduct(array_values($condition));
 	unlink($product->image);
 	$image = uploadImage();
 	$bindVars['image'] = $image;
+
+	if ($_FILES["image"]["name"]) {
+		$product = getProduct(array_values($condition));
+		unlink($product->image);
+		$image = uploadImage();
+		$bindVars['image'] = $image;
+	}
 	$query = sprintf('UPDATE products SET %s WHERE id=%s', implode(', ', constructValues($bindVars, true)), constructValues($condition));
 	conn($query, array_values(array_merge($bindVars, $condition)));
 
