@@ -97,6 +97,7 @@ function sendEmail() {
 		mail($to, $subject, $message, $headers);
 
 	}
+	return;
 
 }
 
@@ -147,6 +148,12 @@ function uploadImage() {
 	return null;
 }
 
+function getProduct($id) {
+	$query = "SELECT * FROM  products WHERE id=?";
+	$item = conn($query, $id, true);
+	return $item;
+}
+
 
 function removeAllCart() {
 	$_SESSION['cart'] = [];
@@ -195,18 +202,25 @@ function addCart() {
 
 
 function deleteProduct() {
-	$condition = ['id' => $_GET['delete-product']];
+	$arrayVal = ['id' => $_GET['delete-product']];
 	$query = "DELETE FROM products WHERE id=?";
-	conn($query, array_values($condition));
+	$product = getProduct(array_values($arrayVal));
+	conn($query, array_values($arrayVal));
+	unlink($product->image);
+
 	redirect(url('products.php'));
 }
 
 
 function updateProduct() {
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
-		$bindVars = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"], 'image' => $_POST["image"]];
+		$bindVars = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
 		$condition = ['id' => $_GET['update-product']];
 	}
+	$product = getProduct(array_values($condition));
+	unlink($product->image);
+	$image = uploadImage();
+	$bindVars['image'] = $image;
 	$query = sprintf('UPDATE products SET %s WHERE id=%s', implode(', ', constructValues($bindVars, true)), constructValues($condition));
 	conn($query, array_values(array_merge($bindVars, $condition)));
 
@@ -241,7 +255,7 @@ function editProduct() {
 	redirect(url('product.php', $items));
 }
 
-function conn($query, $bindVars = [], $is_edit = false) {
+function conn($query, $bindVars = [], $is_list = false) {
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	$stmt = $conn->prepare($query);
 	if (!empty($bindVars)) {
@@ -254,7 +268,7 @@ function conn($query, $bindVars = [], $is_edit = false) {
 	$stmt->close();
 	$items = [];
 	if ($result) {
-		if (!$is_edit) {
+		if (!$is_list) {
 			while ($obj = $result->fetch_object()) {
 				array_push($items, $obj);
 			}
