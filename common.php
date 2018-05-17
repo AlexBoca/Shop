@@ -312,8 +312,8 @@ function logout() {
 	redirect(url('index.php'));
 }
 
-function constructValues($params, $is_set = false) {
-	if ($is_set === true) {
+function constructValues($params, $is_set_keys = false) {
+	if ($is_set_keys === true) {
 		$setFormat = [];
 		foreach ($params as $key => $value) {
 			$setFormat[] = $key . '=' . '?';
