@@ -46,9 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 function sendEmail() {
-	ini_set('sendmail_from', "myself@my.com");
-	ini_set('SMTP', "mail.bigpond.com");
-	ini_set('smtp_port', 25);
 
 	if (empty($_SESSION['cart'])) {
 		redirect($_SERVER['HTTP_REFERER']);
@@ -72,12 +69,24 @@ function sendEmail() {
             	<td>  $product->price </td>
        			</tr>";
 		};
+		$email = "  Email: " . filter_var($_POST['email']);
+		$comments = "Comment: " . filter_var($_POST['comments']);
 
 		$message = "<html>
 			<head>
     		<title>Cart list from ClotheShop</title>
 			</head>
 			<body>
+			<div>
+			<h4>
+			$email;
+			</h4>
+			</div>
+			<div>
+			<h4>
+			$comments;
+			</h4>
+			</div>
 			<table>
     		<thead>
     		<tr>
@@ -92,12 +101,12 @@ function sendEmail() {
 			</body>
 			</html>
 			";
-		$mail = [$to, $subject, $message, $headers];
-		dd($mail);
+		//$mail = [$to, $subject, $message, $headers];
+
 		mail($to, $subject, $message, $headers);
 
 	}
-	return;
+	redirect(url('cart.php'));
 
 }
 
@@ -195,7 +204,7 @@ function addCart() {
 		}
 	}
 	array_push($_SESSION['cart'], $result);
-	redirect(url('cart.php'));
+	redirect(url('index.php'));
 	return;
 }
 

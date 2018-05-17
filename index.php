@@ -19,7 +19,7 @@
 
 			<?php endforeach; ?>
             <div style="margin: 5px">
-                <a type="submit" name="add" href="product.php">Go to cart</a>
+                <a type="submit"  href="cart.php">Go to cart</a>
             </div>
 
         </div>
