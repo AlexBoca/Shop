@@ -33,15 +33,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="8" column="34" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="config-sample.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/config-sample.php">
           <provider selected="true" editor-type-id="text-editor">
@@ -203,12 +194,12 @@
       <workItem from="1526505197139" duration="173000" />
       <workItem from="1526505404854" duration="8041000" />
       <workItem from="1526513517070" duration="406000" />
-      <workItem from="1526540589669" duration="5764000" />
+      <workItem from="1526540589669" duration="6090000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48160000" />
+    <option name="totallyTimeSpent" value="48486000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
