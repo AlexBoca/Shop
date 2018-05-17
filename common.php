@@ -216,9 +216,6 @@ function updateProduct() {
 		$bindVars = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
 		$condition = ['id' => $_GET['update-product']];
 	}
-	unlink($product->image);
-	$image = uploadImage();
-	$bindVars['image'] = $image;
 
 	if ($_FILES["image"]["name"]) {
 		$product = getProduct(array_values($condition));
@@ -226,6 +223,7 @@ function updateProduct() {
 		$image = uploadImage();
 		$bindVars['image'] = $image;
 	}
+
 	$query = sprintf('UPDATE products SET %s WHERE id=%s', implode(', ', constructValues($bindVars, true)), constructValues($condition));
 	conn($query, array_values(array_merge($bindVars, $condition)));
 
