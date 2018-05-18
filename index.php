@@ -1,8 +1,7 @@
 <?php include 'header.php' ?>
     <div class="container" style="margin: 5% 35% 5% 35%">
         <div>
-			<?php
-			foreach (getProducts() as $product): ?>
+            <?php foreach (getProducts() as $product): ?>
                 <table style="width: 70%; border: solid 1px">
                     <tr>
                         <td><img style="width: 100px; height: 100px;" src="<?php echo $product->image ?>"></td>
@@ -15,7 +14,7 @@
                         </td>
                     </tr>
                 </table>
-			<?php endforeach; ?>
+            <?php endforeach; ?>
             <div style="margin: 5px">
                 <a href="cart.php">Go to cart</a>
             </div>

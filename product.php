@@ -1,6 +1,7 @@
 <?php include 'header.php' ?>
 <div style="margin: 5% 35% 5% 35%">
-	<?php if (!isset($_GET['id'])) :
+	<?php
+	if (!isset($_GET['id'])) :
 		$action = 'common.php?create-product';
 		$title = $description = $price = $image = '';
 	else:
@@ -10,28 +11,28 @@
 		$image = $_GET['image'];
 		$action = url('common.php', ['update-product' => $_GET['id']]);
 	endif; ?>
-    <form method="post" action="<?php echo $action ?>" enctype="multipart/form-data">
+    <form method="post" action="<?= $action ?>" enctype="multipart/form-data">
         <div style="margin: 5px">
-            <input type="text" name="title" placeholder="Title" value="<?php echo $title ?>">
+            <input type="text" name="title" placeholder="Title" value="<?= $title ?>">
         </div>
         <div style="margin: 5px">
-            <textarea name="description" placeholder="Description"><?php echo $description ?></textarea>
+            <textarea name="description" placeholder="Description"><?= $description ?></textarea>
         </div>
         <div style="margin: 5px">
-            <input type="text" name="price" placeholder="Price" value="<?php echo $price ?>">
+            <input type="text" name="price" placeholder="Price" value="<?= $price ?>">
         </div>
 		<?php if ($image): ?>
             <div>
-                <img style="width: 80px; height: 80px;" src="<?php echo $image ?>">
+                <img style="width: 80px; height: 80px;" src="<?= $image ?>">
             </div>
 		<?php endif; ?>
         <div style="margin: 5px">
             <input type="hidden" name="size" value="1000000">
-            <input type="file" name="image" id="image" value="<?php echo $image ?>">
+            <input type="file" name="image" id="image" value="<?= $image ?>">
         </div>
         <button type="submit">Save</button>
     </form>
-    <a href="<?php echo url('products.php') ?>">Products</a>
+    <a href="<?= url('products.php') ?>">Products</a>
 </div>
 <?php include 'footer.php' ?>
 
