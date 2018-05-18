@@ -11,10 +11,10 @@ $headers[] = 'From: <' . filter_var($_POST['email']) . '>';
 <body>
 <title>Cart list from ClotheShop</title>
 <div>
-    <h4>Email: <?php echo filter_var($_POST['email']); ?></h4>
+    <h4>Email: <?= filter_var($_POST['email']); ?></h4>
 </div>
 <div>
-    <h4>Comment: <?php echo filter_var($_POST['comments']); ?></h4>
+    <h4>Comment: <?= filter_var($_POST['comments']); ?></h4>
 </div>
 <table>
     <thead>
@@ -25,10 +25,10 @@ $headers[] = 'From: <' . filter_var($_POST['email']) . '>';
     </thead>
     <tbody>
     <tr>
-		<?php foreach ($products as $product) : ?>
-            <td>  <?php echo $product->title ?>   </td>
-            <td>  <?php echo $product->price ?>   </td>
-		<?php endforeach; ?>
+        <?php foreach ($products as $product) : ?>
+            <td>  <?= $product->title ?>   </td>
+            <td>  <?= $product->price ?>   </td>
+        <?php endforeach; ?>
     </tr>
     </tbody>
 </table>
