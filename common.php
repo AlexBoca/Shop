@@ -6,13 +6,18 @@ session_start();
 if (!isset($_SESSION['cart'])) {
 	$_SESSION['cart'] = [];
 }
-//unset($_SESSION['cart']);
+
+
 if (isset($_GET['logout'])) {
 	logout();
 }
+
+
 if (isset($_GET['send-email'])) {
 	sendEmail();
 }
+
+
 if (isset($_SESSION['user'])) {
 	if (isset($_GET["edit-product"])) {
 		editProduct();
@@ -22,15 +27,22 @@ if (isset($_SESSION['user'])) {
 	}
 }
 
+
 if (isset($_GET["add-cart"])) {
 	addCart();
 }
+
+
 if (isset($_GET["remove-cart"])) {
 	removeCart();
 }
+
+
 if (isset($_GET["remove-all-cart"])) {
 	removeAllCart();
 }
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if (isset($_GET['login'])) {
 		login();
@@ -45,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
+
 function sendEmail() {
 
 	if (empty($_SESSION['cart'])) {
@@ -53,63 +66,19 @@ function sendEmail() {
 	}
 
 	if (isset($_POST['email'])) {
-		$to = MANAGER_EMAIL;
-		$subject = "Shop";
-		$headers = "MIME-Version: 1.0" . "\r\n";
-		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-		$headers .= 'From: <' . filter_var($_POST['email']) . '>' . "\r\n";
+		$to = $subject = $headers = '';
 
-		$productList = '';
-		$products = $_SESSION['cart'];
-		foreach ($products as $product) {
+		ob_start();
+		include 'send-email.php';
+		$message = ob_get_contents();
+		ob_end_clean();
 
-			$productList .= "
-				<tr>
-            	<td>  $product->title </td>
-            	<td>  $product->price </td>
-       			</tr>";
-		};
-		$email = "  Email: " . filter_var($_POST['email']);
-		$comments = "Comment: " . filter_var($_POST['comments']);
-
-		$message = "<html>
-			<head>
-    		<title>Cart list from ClotheShop</title>
-			</head>
-			<body>
-			<div>
-			<h4>
-			$email;
-			</h4>
-			</div>
-			<div>
-			<h4>
-			$comments;
-			</h4>
-			</div>
-			<table>
-    		<thead>
-    		<tr>
-        	<th>Title</th>
-        	<th>Price</th>
-    		</tr>
-    		</thead>
-    		<tbody>
-    		$productList
-    		</tbody>
-			</table>
-			</body>
-			</html>
-			";
-		//$mail = [$to, $subject, $message, $headers];
-
-		mail($to, $subject, $message, $headers);
+		$mail = mail($to, $subject, $message, implode("\r\n", $headers));
 
 	}
-	redirect(url('cart.php'));
+	redirect(url('cart.php', ['mail' => $mail]));
 
 }
-
 
 function uploadImage() {
 	$target_dir = "images/";
@@ -117,6 +86,7 @@ function uploadImage() {
 	$uploadOk = 1;
 	$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 	$imgName = $target_dir . md5(date('Y-m-d H:i:s')) . '.' . $imageFileType;
+
 	if (isset($_POST["submit"])) {
 		$check = getimagesize($_FILES["image"]["tmp_name"]);
 		if ($check !== false) {
@@ -144,10 +114,9 @@ function uploadImage() {
 	// Check if $uploadOk is set to 0 by an error
 	if ($uploadOk == 0) {
 		echo "Sorry, your file was not uploaded.";
-// if everything is ok, try to upload file
+		// if everything is ok, try to upload file
 	} else {
 		if (move_uploaded_file($_FILES["image"]["tmp_name"], $imgName)) {
-			echo "The file " . basename($_FILES["image"]["name"]) . " has been uploaded.";
 			return $imgName;
 		} else {
 			echo "Sorry, there was an error uploading your file.";
@@ -158,35 +127,35 @@ function uploadImage() {
 
 function getProduct($id) {
 	$query = "SELECT * FROM  products WHERE id=?";
-	$item = conn($query, $id, true);
+	$item = conn($query, $id);
 	return $item;
 }
-
 
 function removeAllCart() {
 	$_SESSION['cart'] = [];
 	redirect(url('index.php'));
 }
 
+
 function removeCart() {
-	$product_id = $_GET['remove-cart'];
 	if (empty($product_id)) {
 		redirect($_SERVER['HTTP_REFERER']);
 		return;
 	}
 	$query = "SELECT * FROM products WHERE id=?";
-	conn($query, array_values(['id' => $product_id]));
+	conn($query, $_GET['remove-cart']);
 	foreach ($_SESSION['cart'] as $cart) {
 		if ($product_id == $cart->id) {
 			$index = array_search($cart, $_SESSION["cart"]);
 			unset($_SESSION["cart"][$index]);
-			redirect(url('index.php'));
+			redirect(url('cart.php'));
 			return;
 		}
 	}
 	return;
 
 }
+
 
 function addCart() {
 
@@ -195,25 +164,22 @@ function addCart() {
 		redirect($_SERVER['HTTP_REFERER']);
 		return;
 	}
-	$query = "SELECT * FROM products WHERE id=?";
-	$result = conn($query, array_values(['id' => $product_id]), true);
 	foreach ($_SESSION['cart'] as $cart) {
 		if ($product_id == $cart->id) {
 			redirect(url('index.php'));
 			return;
 		}
 	}
-	array_push($_SESSION['cart'], $result);
+	array_push($_SESSION['cart'], getProduct($product_id));
 	redirect(url('index.php'));
 	return;
 }
 
 
 function deleteProduct() {
-	$arrayVal = ['id' => $_GET['delete-product']];
 	$query = "DELETE FROM products WHERE id=?";
-	$product = getProduct(array_values($arrayVal));
-	conn($query, array_values($arrayVal));
+	$product = getProduct($_GET['delete-product']);
+	conn($query, $_GET['delete-product']);
 	unlink($product->image);
 
 	redirect(url('products.php'));
@@ -222,56 +188,88 @@ function deleteProduct() {
 
 function updateProduct() {
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
-		$bindVars = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
-		$condition = ['id' => $_GET['update-product']];
+		$params = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
 	}
 
 	if ($_FILES["image"]["name"]) {
-		$product = getProduct(array_values($condition));
+		$product = getProduct(array_values($_GET['update-product']));
 		unlink($product->image);
 		$image = uploadImage();
 		$bindVars['image'] = $image;
 	}
 
-	$query = sprintf('UPDATE products SET %s WHERE id=%s', implode(', ', constructValues($bindVars, true)), constructValues($condition));
-	conn($query, array_values(array_merge($bindVars, $condition)));
+	$format = [];
+	foreach ($params as $key => $value) {
+		$format[] = $key . '=' . "'$value'";
+	}
+	$format = implode(', ', $format);
+	$query = "UPDATE products SET $format WHERE id=?";
+	conn($query, $_GET['update-product']);
 
 	redirect(url('products.php'));
 }
+
 
 function createProduct() {
-	if ($_SERVER["REQUEST_METHOD"] == "POST") {
-		$params = [$_POST["title"], $_POST["description"], $_POST["price"]];
-	}
+	$params = ['title' => $_POST["title"], 'descrition' => $_POST["description"], 'price' => $_POST["price"]];
 	$image = uploadImage();
+
+	$params = array_values($params);
 	array_push($params, $image);
 
+	array_values($params);
 	$query = "INSERT INTO products (title,description,price,image) VALUES (?,?,?,?)";
-	$arrayVal = array_values($params);
-	conn($query, $arrayVal);
+	conn($query, $params);
+	//dd($params);
 	redirect(url('products.php'));
 }
+
 
 function getProducts() {
 	$query = "SELECT * FROM products";
-	$items = conn($query);
+	$items = conn($query, [], true);
 	return $items;
 }
 
+
 function editProduct() {
 	$query = "SELECT * FROM  products WHERE id=?";
-	$arrayVal = array_values(['id' => $_GET['edit-product']]);
-	$items = conn($query, $arrayVal, true);
-
+	$items = conn($query, $_GET['edit-product']);
 
 	redirect(url('product.php', $items));
 }
 
-function conn($query, $bindVars = [], $is_list = false) {
+
+function login() {
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+		$name = $_POST["username"];
+		$password = $_POST["password"];
+	}
+	$query = "SELECT * FROM users";
+	$result = conn($query);
+	if ($result->username == $name && $result->password == $password) {
+		$_SESSION['user'] = true;
+	}
+	if (ADMIN_USERNAME == $name || ADMIN_PASSWORD == $password) {
+		redirect(url('products.php'));
+	}
+	redirect('index.php');
+}
+
+
+function logout() {
+	if (isset($_SESSION['user'])) {
+		unset($_SESSION['user']);
+	}
+	redirect(url('index.php'));
+}
+
+
+function conn($query, $params = [], $get_list = false) {
 	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	$stmt = $conn->prepare($query);
-	if (!empty($bindVars)) {
-		DynamicBindVariables($stmt, $bindVars);
+	if (!empty($params)) {
+		DynamicBindVariables($stmt, $params);
 	}
 	$stmt->execute();
 
@@ -280,7 +278,7 @@ function conn($query, $bindVars = [], $is_list = false) {
 	$stmt->close();
 	$items = [];
 	if ($result) {
-		if (!$is_list) {
+		if ($get_list) {
 			while ($obj = $result->fetch_object()) {
 				array_push($items, $obj);
 			}
@@ -293,93 +291,65 @@ function conn($query, $bindVars = [], $is_list = false) {
 	return $items;
 }
 
+function bindTypes($param) {
+	$types = '';
 
-function login() {
-	if ($_SERVER["REQUEST_METHOD"] == "POST") {
-		$name = $_POST["username"];
-		$password = $_POST["password"];
+	if (is_int($param)) {
+		// Integer
+		$types .= 'i';
+	} elseif (is_float($param)) {
+		// Double
+		$types .= 'd';
+	} elseif (is_string($param)) {
+		// String
+		$types .= 's';
+	} else {
+		// Blob and Unknown
+		$types .= 'b';
 	}
-	$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-	$query = "SELECT id, username, password FROM users";
-	$result = $conn->query($query);
-	$result = $result->fetch_object();
 
-	if ($result->username == $name && $result->password == $password) {
-		$_SESSION['user'] = true;
-	}
-	$conn->close();
-	if (ADMIN_USERNAME == $name || ADMIN_PASSWORD == $password) {
-		redirect(url('products.php'));
-	}
-	redirect('index.php');
-}
-
-function logout() {
-	if (isset($_SESSION['user'])) {
-		unset($_SESSION['user']);
-	}
-	redirect(url('index.php'));
-}
-
-function constructValues($params, $is_set_keys = false) {
-	if ($is_set_keys === true) {
-		$setFormat = [];
-		foreach ($params as $key => $value) {
-			$setFormat[] = $key . '=' . '?';
-		}
-		return $setFormat;
-	}
-	$values = [];
-	for ($i = 0; $i < count($params); $i++) {
-		$values[] = '?';
-	}
-	return implode(',', $values);
+	return $types;
 }
 
 function DynamicBindVariables($stmt, $params) {
 
 	if ($params != null) {
 		// Generate the Type String (eg: 'issisd')
-		$types = '';
-		foreach ($params as $param) {
-			if (is_int($param)) {
-				// Integer
-				$types .= 'i';
-			} elseif (is_float($param)) {
-				// Double
-				$types .= 'd';
-			} elseif (is_string($param)) {
-				// String
-				$types .= 's';
-			} else {
-				// Blob and Unknown
-				$types .= 'b';
+		$bind_names = [];
+		if (is_array($params)) {
+			$types = '';
+			foreach ($params as $param) {
+				$types .= bindTypes($param);
 			}
-		}
-		// Add the Type String as the first Parameter
-		$bind_names[] = $types;
-		// Loop thru the given Parameters
-		for ($i = 0; $i < count($params); $i++) {
-			// Create a variable Name
-			$bind_name = 'bind' . $i;
-			// Add the Parameter to the variable Variable
-			$$bind_name = $params[$i];
+			$bind_names[] = $types;
+			for ($i = 0; $i < count($params); $i++) {
+				// Create a variable Name
+				$bind_name = 'bind' . $i;
+				// Add the Parameter to the variable Variable
+				$$bind_name = $params[$i];
 
-			// Associate the Variable as an Element in the Array
-			$bind_names[] = &$$bind_name;
+				// Associate the Variable as an Element in the Array
+				$bind_names[] = &$$bind_name;
+			}
+		} else {
+			$param = $params;
+			$type = '';
+			$type .= bindTypes($params);
+			$stmt->bind_param($type, $param);
 		}
-		//dd($bind_names);
 
-		// Call the Function bind_param with dynamic Parameters
 		call_user_func_array(array($stmt, 'bind_param'), $bind_names);
 	}
+
 	return $stmt;
 }
 
 
 function redirect($location) {
 	header('Location: ' . $location);
+	exit();
 }
+
 
 function url($location, $params = []) {
 	$url = BASE_URL . str_replace('//', '/', '/' . $location);
@@ -388,6 +358,7 @@ function url($location, $params = []) {
 	}
 	return $url;
 }
+
 
 function dd($name) {
 	var_dump($name);

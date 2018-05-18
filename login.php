@@ -1,8 +1,4 @@
-<?php
-include 'header.php';
-?>
-
-
+<?php include 'header.php'; ?>
     <div id="content" style="margin: 5% 35% 5% 35%">
 		<?php if (isset($_SESSION['user'])) :
 			echo 'you are logged in!'; ?>
@@ -19,10 +15,8 @@ include 'header.php';
                 </div>
                 <button type="submit">Login</button>
             </form>
-
 		<?php endif; ?>
     </div>
-
 <?php include 'footer.php';
 
 
