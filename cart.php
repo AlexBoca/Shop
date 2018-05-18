@@ -4,8 +4,8 @@ $products = $_SESSION['cart'];
     <div id="content" style="margin: 5% 35% 5% 35%">
         <div>
             <h4><?php if (isset($_GET['mail'])) :
-					echo 'Thanks for contacting us.';
-				endif; ?>
+                    echo 'Thanks for contacting us.';
+                endif; ?>
             </h4>
 			<?php foreach ($products as $product): ?>
                 <table style="width: 70%; border: solid 1px">
@@ -21,7 +21,7 @@ $products = $_SESSION['cart'];
                         </td>
                     </tr>
                 </table>
-			<?php endforeach; ?>
+            <?php endforeach; ?>
         </div>
         <div style="margin: 5px">
             <a name="add" href="<?= url('index.php') ?>">Go to index</a>
@@ -37,6 +37,5 @@ $products = $_SESSION['cart'];
             <button type="submit">Checkout</button>
         </form>
     </div>
-
 <?php include 'footer.php';
 
