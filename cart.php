@@ -4,7 +4,7 @@ $products = $_SESSION['cart'];
     <div id="content" style="margin: 5% 35% 5% 35%">
         <div>
             <h4>
-                <?php if (isset($_GET['mail'])) :
+                    <?php if (isset($_GET['mail'])) :
                     echo 'Thanks for contacting us.';
                 endif; ?>
             </h4>
