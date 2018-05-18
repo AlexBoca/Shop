@@ -3,11 +3,12 @@ $products = $_SESSION['cart'];
 ?>
     <div id="content" style="margin: 5% 35% 5% 35%">
         <div>
-            <h4><?php if (isset($_GET['mail'])) :
+            <h4>
+                <?php if (isset($_GET['mail'])) :
                     echo 'Thanks for contacting us.';
                 endif; ?>
             </h4>
-			<?php foreach ($products as $product): ?>
+            <?php foreach ($products as $product): ?>
                 <table style="width: 70%; border: solid 1px">
                     <tr>
                         <td><img style="width: 100px; height: 100px;" src="<?= $product->image ?>"></td>
@@ -16,8 +17,7 @@ $products = $_SESSION['cart'];
                             <p><?= $product->price ?></p>$
                         </td>
                         <td>
-                            <a name="add"
-                               href="<?= url('common.php', ['remove-cart' => $product->id]) ?>">Remove</a>
+                            <a href="<?= url('common.php', ['remove-cart' => $product->id]) ?>">Remove</a>
                         </td>
                     </tr>
                 </table>
