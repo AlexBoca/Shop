@@ -21,11 +21,11 @@
         <div style="margin: 5px">
             <input type="text" name="price" placeholder="Price" value="<?= $price ?>">
         </div>
-		<?php if ($image): ?>
+        <?php if ($image): ?>
             <div>
                 <img style="width: 80px; height: 80px;" src="<?= $image ?>">
             </div>
-		<?php endif; ?>
+        <?php endif; ?>
         <div style="margin: 5px">
             <input type="hidden" name="size" value="1000000">
             <input type="file" name="image" id="image" value="<?= $image ?>">

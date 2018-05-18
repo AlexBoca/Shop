@@ -26,8 +26,8 @@ $headers[] = 'From: <' . filter_var($_POST['email']) . '>';
     <tbody>
     <tr>
         <?php foreach ($products as $product) : ?>
-            <td>  <?= $product->title ?>   </td>
-            <td>  <?= $product->price ?>   </td>
+            <td><?= $product->title ?></td>
+            <td><?= $product->price ?></td>
         <?php endforeach; ?>
     </tr>
     </tbody>
