@@ -1,4 +1,4 @@
-<?php include_once 'header.php';
+<?php include 'header.php';
 
 if (isset($_GET['send-email'])) {
     if (!empty($_SESSION['cart']) && isset($_POST['email'])) {

@@ -15,6 +15,7 @@ if (isset($_GET['create-product'])) {
     conn($query, $params);
     redirect(url('products.php'));
 }
+
 if (isset($_GET['update-product'])) {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $params = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
@@ -36,7 +37,6 @@ if (isset($_GET['update-product'])) {
 
     redirect(url('products.php'));
 }
-
 
 function uploadImage()
 {
@@ -84,16 +84,16 @@ function uploadImage()
     return null;
 }
 
-if (!isset($_GET['id'])) :
+if (!isset($_GET['id'])) {
     $action = 'product.php?create-product';
     $title = $description = $price = $image = '';
-else:
+} else {
     $title = $_GET['title'];
     $description = $_GET['description'];
     $price = $_GET['price'];
     $image = $_GET['image'];
     $action = url('product.php', ['update-product' => $_GET['id']]);
-endif;
+}
 ?>
 <div style="margin: 5% 35% 5% 35%">
     <form method="post" action="<?= $action ?>" enctype="multipart/form-data">
