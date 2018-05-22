@@ -2,11 +2,18 @@
 
 session_start();
 
-function __($key, $lang = 'en')
-{
-    $translations = require ROOT . 'lang/' . $lang . '.php';
+$lang = 'en';
+if (!empty($lang)) {
+    $translation = require_once 'lang/' . $lang . '.php';
+}
 
-    return $translations[$key];
+function __($key)
+{
+    global $translation;
+    if (!empty($translation[$key])) {
+        return $translation[$key];
+    }
+    return $key;
 }
 
 function conn($query, $params = [], $get_list = false)
