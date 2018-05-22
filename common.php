@@ -3,7 +3,7 @@
 session_start();
 
 $lang = 'en';
-if (!empty($lang)) {
+if ($lang) {
     $translation = require_once 'lang/' . $lang . '.php';
 }
 
