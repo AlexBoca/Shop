@@ -1,15 +1,15 @@
-<?php include 'common.php' ?>
+<?php require_once 'common.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 <body>
 <header>
     <div>
-        <a href="<?php echo url('index.php') ?>">Home</a>
-        <a href="<?php echo url('cart.php') ?>">Cart</a>
-        <a href="<?php echo url('login.php') ?>">Login</a>
+        <a href="<?= url('index.php') ?>"><?= __('Home') ?></a>
+        <a href="<?= url('cart.php') ?>"><?= __('Cart') ?></a>
+        <a href="<?= url('login.php') ?>"><?= __('Login') ?></a>
         <?php if (isset($_SESSION['user'])): ?>
-            <a href="<?php echo url('product.php') ?>">Create</a>
-            <a href="<?php echo url('products.php') ?>">Products</a>
+            <a href="<?= url('product.php') ?>"><?= __('Create') ?></a>
+            <a href="<?= url('products.php') ?>"><?= __('Products') ?></a>
         <?php endif; ?>
     </div>
 </header>
