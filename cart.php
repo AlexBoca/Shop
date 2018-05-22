@@ -22,10 +22,11 @@ if (isset($_GET["remove-all-cart"])) {
 }
 
 if (isset($_GET["remove-cart"])) {
-    if (empty($_GET['remove-cart']) || empty($_SESSION['cart'])) {
+    $productId = $_GET['remove-cart'];
+    if (empty($productId) || empty($_SESSION['cart'])) {
         redirect($_SERVER['HTTP_REFERER']);
     }
-    $productId = $_GET['remove-cart'];
+
     $index = array_search($productId, $_SESSION["cart"]);
     if ($index !== false) {
         unset($_SESSION["cart"][$index]);
