@@ -1,43 +1,42 @@
 <?php include 'header.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_SESSION['user'])) {
-        if (isset($_GET['create-product'])) {
-            $params = ['title' => $_POST["title"], 'descrition' => $_POST["description"], 'price' => $_POST["price"]];
-            $image = uploadImage();
-
-            $params = array_values($params);
-            array_push($params, $image);
-
-            $query = "INSERT INTO products (title,description,price,image) VALUES (?,?,?,?)";
-            conn($query, $params);
-            redirect(url('products.php'));
-        }
-        if (isset($_GET['update-product'])) {
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $params = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
-            }
-            if ($_FILES["image"]["name"]) {
-                $query = "SELECT * FROM  products WHERE id=?";
-                $product = conn($query, $_GET['update-product']);
-                unlink($product->image);
-                $image = uploadImage();
-                $params['image'] = $image;
-            }
-            $format = [];
-            foreach ($params as $key => $value) {
-                $format[] = $key . '=' . "'$value'";
-            }
-            $format = implode(', ', $format);
-            $query = "UPDATE products SET $format WHERE id=?";
-            conn($query, $_GET['update-product']);
-
-            redirect(url('products.php'));
-        }
-        redirect($_SERVER['HTTP_REFERER']);
-    }
+if (!$_SERVER['REQUEST_METHOD'] == 'POST' || !isset($_SESSION['user'])) {
     redirect($_SERVER['HTTP_REFERER']);
 }
+
+if (isset($_GET['create-product'])) {
+    $params = ['title' => $_POST["title"], 'descrition' => $_POST["description"], 'price' => $_POST["price"]];
+    $image = uploadImage();
+
+    $params = array_values($params);
+    array_push($params, $image);
+
+    $query = "INSERT INTO products (title,description,price,image) VALUES (?,?,?,?)";
+    conn($query, $params);
+    redirect(url('products.php'));
+}
+if (isset($_GET['update-product'])) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $params = ['title' => $_POST["title"], 'description' => $_POST["description"], 'price' => $_POST["price"]];
+    }
+    if ($_FILES["image"]["name"]) {
+        $query = "SELECT * FROM  products WHERE id=?";
+        $product = conn($query, $_GET['update-product']);
+        unlink($product->image);
+        $image = uploadImage();
+        $params['image'] = $image;
+    }
+    $format = [];
+    foreach ($params as $key => $value) {
+        $format[] = $key . '=' . "'$value'";
+    }
+    $format = implode(', ', $format);
+    $query = "UPDATE products SET $format WHERE id=?";
+    conn($query, $_GET['update-product']);
+
+    redirect(url('products.php'));
+}
+
 
 function uploadImage()
 {
