@@ -54,7 +54,7 @@ function uploadImage()
 
     $acceptedTypes = ["jpg", "png", "jpeg", "gif"];
 
-    if (!isset($_POST["submit"]) && file_exists($imgName) && !array_search($imageFileType, $acceptedTypes)) {
+    if (!isset($_POST["submit"]) && file_exists($imgName) && !in_array($imageFileType, $acceptedTypes)) {
         redirect(url('product.php'));
     } elseif (!move_uploaded_file($_FILES["image"]["tmp_name"], $imgName)) {
         redirect(url('product.php'));
