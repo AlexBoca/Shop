@@ -45,40 +45,40 @@ function getCartItems()
 }
 
 ?>
-    <div style="margin: 5% 35% 5% 35%;">
-        <div>
-            <?php if (isset($_GET['mail'])) { ?>
-                <h4><?= __('Thanks for contacting us.'); ?></h4>
-            <?php } ?>
-            <?php foreach (getCartItems() as $product): ?>
-                <table style="width: 70%; border: solid 1px;">
-                    <tr>
-                        <td><img style="width: 100px; height: 100px;" src="<?= $product->image ?>"></td>
-                        <td>
-                            <h3><?= strip_tags($product->title) ?></h3>
-                            <p><?= strip_tags($product->description) ?></p>
-                            <p><?= strip_tags($product->price) ?>$</p>
-                        </td>
-                        <td>
-                            <a href="<?= url('cart.php', ['id' => $product->id]) ?>"><?= __('Remove') ?></a>
-                        </td>
-                    </tr>
-                </table>
-            <?php endforeach; ?>
+<div style="margin: 5% 35% 5% 35%;">
+    <div>
+        <?php if (isset($_GET['mail'])) { ?>
+            <h4><?= __('Thanks for contacting us.'); ?></h4>
+        <?php } ?>
+        <?php foreach (getCartItems() as $product): ?>
+            <table style="width: 70%; border: solid 1px;">
+                <tr>
+                    <td><img style="width: 100px; height: 100px;" src="<?= $product->image ?>"></td>
+                    <td>
+                        <h3><?= strip_tags($product->title) ?></h3>
+                        <p><?= strip_tags($product->description) ?></p>
+                        <p><?= strip_tags($product->price) ?>$</p>
+                    </td>
+                    <td>
+                        <a href="<?= url('cart.php', ['id' => $product->id]) ?>"><?= __('Remove') ?></a>
+                    </td>
+                </tr>
+            </table>
+        <?php endforeach; ?>
+    </div>
+    <div style="margin: 5px;">
+        <a name="to-index" href="<?= url('index.php') ?>"><?= __('Go to index') ?></a>
+        <a name="remove-all" href="<?= url('cart.php?remove-all') ?>"><?= __('Remove all') ?></a>
+    </div>
+    <form method="post" action="<?= url('cart.php') ?>" enctype="multipart/form-data">
+        <div style="margin: 5px;">
+            <input type="text" name="email" placeholder="<?= __('Email') ?>" value="">
         </div>
         <div style="margin: 5px;">
-            <a name="to-index" href="<?= url('index.php') ?>"><?= __('Go to index') ?></a>
-            <a name="remove-all" href="<?= url('cart.php?remove-all') ?>"><?= __('Remove all') ?></a>
+            <textarea name="comments" placeholder="<?= __('Comments') ?>"></textarea>
         </div>
-        <form method="post" action="<?= url('cart.php') ?>" enctype="multipart/form-data">
-            <div style="margin: 5px;">
-                <input type="text" name="email" placeholder="<?= __('Email') ?>" value="">
-            </div>
-            <div style="margin: 5px;">
-                <textarea name="comments" placeholder="<?= __('Comments') ?>"></textarea>
-            </div>
-            <button type="submit"><?= __('Checkout') ?></button>
-        </form>
-    </div>
+        <button type="submit"><?= __('Checkout') ?></button>
+    </form>
+</div>
 <?php include 'footer.php';
 
