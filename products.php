@@ -5,12 +5,11 @@ if (!isset($_SESSION['user'])) {
     redirect(url('login.php'));
 }
 if (isset($_GET["id"])) {
-    $query = "DELETE FROM products WHERE id=?";
-    conn($query, $_GET['id']);
     $query = "SELECT * FROM  products WHERE id=?";
     $product = conn($query, $_GET['id']);
     unlink($product->image);
-    redirect(url('products.php'));
+    $query = "DELETE FROM products WHERE id=?";
+    conn($query, $_GET['id']);
 }
 function getProducts()
 {
