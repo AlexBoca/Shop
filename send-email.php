@@ -1,11 +1,9 @@
 <?php
-$cartList = [];
+
 if ($_SESSION['cart']) {
-    foreach ($_SESSION['cart'] as $cartId) {
-        $query = "SELECT * FROM  products WHERE id=?";
-        $items = conn($query, $cartId);
-        array_push($cartList, $items);
-    }
+    $placeholders = implode(',', array_fill(0, count($_SESSION['cart']), '?'));
+    $query = "SELECT * FROM  products WHERE id IN ($placeholders)";
+    $cartList = conn($query, $_SESSION['cart'], true);
 }
 
 $to = MANAGER_EMAIL;

@@ -1,11 +1,9 @@
-<?php include 'config.php';
+<?php
+require_once 'config.php';
 
 session_start();
 
-$lang = 'en';
-if ($lang) {
-    $translation = require_once 'lang/' . $lang . '.php';
-}
+$translation = require_once 'lang/en.php';
 
 function __($key)
 {

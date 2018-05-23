@@ -1,19 +1,14 @@
-<?php include 'header.php';
+<?php
+include 'header.php';
 
-if (isset($_GET['login'])) {
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $name = $_POST["username"];
-        $password = $_POST["password"];
-    }
-    $query = "SELECT * FROM users";
-    $result = conn($query);
-    if ($result->username == $name && $result->password == $password) {
-        $_SESSION['user'] = true;
-    }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST["username"];
+    $password = $_POST["password"];
     if (ADMIN_USERNAME == $name || ADMIN_PASSWORD == $password) {
+        $_SESSION['user'] = true;
         redirect(url('products.php'));
     }
-    redirect('index.php');
+    redirect($_SERVER['HTTP_REFERER']);
 }
 
 if (isset($_GET['logout'])) {
@@ -21,14 +16,13 @@ if (isset($_GET['logout'])) {
         unset($_SESSION['user']);
     }
     redirect(url('index.php'));
-
 }
 ?>
 <div id="content" style="margin: 5% 35% 5% 35%;">
     <?php if (isset($_SESSION['user'])) :echo 'you are logged in!'; ?>
         <a href="<?= url('login.php?logout') ?>"><?= __('Logout') ?></a>
     <?php else: ?>
-        <form method="post" action="<?= url('login.php?login') ?>">
+        <form method="post" action="<?= url('login.php') ?>">
             <div style="margin: 5px;">
                 <label><?= __('Username') ?></label>
                 <input type="text" name="username" value="">
