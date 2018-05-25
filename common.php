@@ -14,6 +14,13 @@ function __($key)
     return $key;
 }
 
+function dd($param)
+{
+    var_dump($param);
+    die;
+}
+
+
 function conn($query, $params = [], $get_list = false)
 {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
@@ -35,6 +42,7 @@ function conn($query, $params = [], $get_list = false)
         }
         $result->close();
     }
+
     return $items;
 }
 
@@ -75,6 +83,38 @@ function dynamicBindVariables($stmt, $params)
         call_user_func_array(array($stmt, 'bind_param'), $bind_names);
     }
     return $stmt;
+}
+
+function flash($name = '', $message = '')
+{
+    if (!empty($name)) {
+
+        if (!empty($message) && empty($_SESSION['errors'][$name])) {
+            if (!empty($_SESSION['errors'][$name])) {
+                unset($_SESSION['errors'][$name]);
+            }
+            $_SESSION['errors'][$name] = $message;
+        } elseif (!empty($_SESSION['errors'][$name]) && empty($message)) {
+            echo $_SESSION['errors'][$name];
+            unset($_SESSION['errors'][$name]);
+        }
+    }
+}
+
+function old($name = '', $message = '')
+{
+    if (!empty($name)) {
+        if (!empty($message) && empty($_SESSION['old'][$name])) {
+            if (!empty($_SESSION['old'][$name])) {
+                unset($_SESSION['old'][$name]);
+            }
+            $_SESSION['old'][$name] = $message;
+        } elseif (!empty($_SESSION['old'][$name]) && empty($message)) {
+            $result = $_SESSION['old'][$name];
+            unset($_SESSION['old'][$name]);
+            return $result;
+        }
+    }
 }
 
 function redirect($location)

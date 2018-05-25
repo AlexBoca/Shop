@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['user'] = true;
         redirect(url('products.php'));
     }
-    redirect($_SERVER['HTTP_REFERER']);
+    redirect(url('login.php', ['error' => 'login']));
 }
 
 if (isset($_GET['logout'])) {
@@ -18,23 +18,28 @@ if (isset($_GET['logout'])) {
     redirect(url('index.php'));
 }
 ?>
-<div id="content" style="margin: 5% 35% 5% 35%;">
-    <?php if (isset($_SESSION['user'])) :echo 'you are logged in!'; ?>
-        <a href="<?= url('login.php?logout') ?>"><?= __('Logout') ?></a>
-    <?php else: ?>
-        <form method="post" action="<?= url('login.php') ?>">
-            <div style="margin: 5px;">
-                <label><?= __('Username') ?></label>
-                <input type="text" name="username" value="">
-            </div>
-            <div style="margin: 5px;">
-                <label><?= __('Password') ?></label>
-                <input type="password" name="password" value="">
-            </div>
-            <button type="submit"><?= __('Login') ?></button>
-        </form>
-    <?php endif; ?>
-</div>
+    <div id="content" style="margin: 5% 35% 5% 35%;">
+        <?php if (isset($_GET['error']) == 'login') {
+            echo 'Sorry but Username and password don`t match!';
+        }
+
+
+        if (isset($_SESSION['user'])) :echo 'you are logged in!'; ?>
+            <a href="<?= url('login.php?logout') ?>"><?= __('Logout') ?></a>
+        <?php else: ?>
+            <form method="post" action="<?= url('login.php') ?>">
+                <div style="margin: 5px;">
+                    <label><?= __('Username') ?></label>
+                    <input type="text" name="username" value=""/>
+                </div>
+                <div style="margin: 5px;">
+                    <label><?= __('Password') ?></label>
+                    <input type="password" name="password" value=""/>
+                </div>
+                <button type="submit"><?= __('Login') ?></button>
+            </form>
+        <?php endif; ?>
+    </div>
 <?php include 'footer.php';
 
 

@@ -72,7 +72,7 @@ function getCartItems()
     </div>
     <form method="post" action="<?= url('cart.php') ?>" enctype="multipart/form-data">
         <div style="margin: 5px;">
-            <input type="text" name="email" placeholder="<?= __('Email') ?>" value="">
+            <input type="text" name="email" placeholder="<?= __('Email') ?>" value=""/>
         </div>
         <div style="margin: 5px;">
             <textarea name="comments" placeholder="<?= __('Comments') ?>"></textarea>
